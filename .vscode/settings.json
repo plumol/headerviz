@@ -40,6 +40,8 @@
         "ratio": "cpp",
         "sstream": "cpp",
         "variant": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "regex": "cpp",
+        "vector": "cpp"
     }
 }

@@ -1,16 +1,18 @@
 #include <filesystem>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <deque>
+#include <regex>
 
 #include <parser/parser.h>
 #include <cli/args_parser.h> // using the ArgParser struct
 
 std::string file_extensions[4] = {".cpp", ".h", ".hpp", ".c"};
 
-int recursive_search(ParserResults* results, ArgParserResults parsed) {
-    std::filesystem::path root_path = parsed.root_path;
+int recursive_search(ParserResults* results, ArgParserResults* parsed) {
+    std::filesystem::path root_path = parsed->root_path;
 
     std::deque<std::filesystem::path> dir_queue;
     dir_queue.push_back(root_path);
@@ -55,5 +57,29 @@ int recursive_search(ParserResults* results, ArgParserResults parsed) {
         std::cout << entry << std::endl;
     }
     
+    return 0;
+}
+
+int map_includes(ParserResults* results) {
+    // std::filesystem::path test_path = "../src/cli/args_parser.cpp";
+    
+    std::regex r(R"(^#include(\s*)+[<"]([^">]+)[">])");
+
+    for (const auto& fp : results->files) {
+        std::string line;
+        std::ifstream file_path(fp);
+
+        while (std::getline(file_path, line)) {
+            std::smatch match;
+            if (std::regex_search(line, match, r)) {
+                std::cout << line << std::endl;
+                std::cout << match[2].str() << std::endl;
+                results->includes[fp].push_back(match[2].str());
+            }
+        }
+
+        file_path.close();
+    }
+
     return 0;
 }

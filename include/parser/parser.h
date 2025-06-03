@@ -13,6 +13,7 @@ struct ParserResults {
 };
 
 
-int recursive_search(ParserResults* results, ArgParserResults parsed);
+int recursive_search(ParserResults* results, ArgParserResults* parsed);
+int map_includes(ParserResults* results);
 
 #endif
